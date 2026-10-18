@@ -1,6 +1,6 @@
 # AuditGraph report
 
-_Generated 2026-10-18T16:12:49+00:00 from FalkorDB graph state._
+_Generated 2026-10-18T16:13:42+00:00 from FalkorDB graph state._
 
 **Confirmed:** 5  |  **Dismissed:** 1  |  **Unverified candidates:** 0  |  **Resolved by upgrade:** 1
 
@@ -148,7 +148,7 @@ RETURN f.id AS fn, [f.id] AS path,
 
 ## Dismissed findings
 
-- `AG-8d7038` reentrancy:VulnBank.sweepFees() — treasury is an immutable, trusted multisig set at deploy; cannot re-enter
+- `AG-8d7038` reentrancy:VulnBank.sweepFees() — trusted immutable treasury
 
 ## Resolved by upgrade
 
