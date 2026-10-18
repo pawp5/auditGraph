@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+crytic-export/
+report.md
+.venv/
+dump.rdb

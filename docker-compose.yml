@@ -1,0 +1,11 @@
+# FalkorDB with the browser UI. 6379 = Redis/Cypher protocol, 3000 = FalkorDB Browser.
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    ports:
+      - "6379:6379"
+      - "3000:3000"
+    volumes:
+      - falkordb_data:/data   # persists agent memory (findings, verdicts, triage) across restarts
+volumes:
+  falkordb_data:

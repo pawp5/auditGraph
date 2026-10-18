@@ -1,0 +1,6 @@
+falkordb>=1.0.10
+slither-analyzer>=0.10.0
+solc-select>=1.0.4
+rich>=13.0
+anthropic>=0.40
+pytest>=8.0
