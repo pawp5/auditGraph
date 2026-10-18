@@ -6,3 +6,4 @@ crytic-export/
 report.md
 .venv/
 dump.rdb
+.falkordb/
