@@ -25,7 +25,7 @@ class GraphUnavailable(RuntimeError):
 def get_graph(name: str | None = None):
     """Return a FalkorDB graph handle, failing with an actionable message."""
     host = os.getenv("FALKORDB_HOST", "localhost")
-    port = int(os.getenv("FALKORDB_PORT", "6379"))
+    port = int(os.getenv("FALKORDB_PORT", "6380"))
     try:
         db = FalkorDB(host=host, port=port)
         g = db.select_graph(name or GRAPH_NAME)

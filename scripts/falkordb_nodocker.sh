@@ -4,7 +4,7 @@
 # Usage: pip install falkordblite && ./scripts/falkordb_nodocker.sh
 set -euo pipefail
 BIN=$(python3 -c "import redislite,os;print(os.path.join(os.path.dirname(redislite.__file__),'bin'))")
-PORT=${FALKORDB_PORT:-6379}
+PORT=${FALKORDB_PORT:-6380}
 mkdir -p .falkordb
 setsid nohup "$BIN/redis-server" --port "$PORT" --loadmodule "$BIN/falkordb.so" \
   --dir "$(pwd)/.falkordb" --logfile "$(pwd)/.falkordb/server.log" >/dev/null 2>&1 &

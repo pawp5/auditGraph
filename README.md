@@ -53,25 +53,27 @@ Requirements: Python 3.11+, Docker (or the no-Docker fallback below).
 
 ```bash
 git clone <this repo> && cd auditgraph
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv .venv && source .venv/bin/activate
+python -m pip install -r requirements.txt
 
 # Solidity compiler used by Slither
 solc-select install 0.8.20 && solc-select use 0.8.20
 
-# FalkorDB (graph DB + Browser UI on http://localhost:3000)
+# FalkorDB (graph DB on localhost:6380; Browser UI on http://localhost:3000)
 docker compose up -d
 #   No Docker? Real FalkorDB server from pip:
 #   pip install falkordblite && ./scripts/falkordb_nodocker.sh
 
-cp .env.example .env    # then export the variables, or set them in your shell
+cp .env.example .env
+# The app reads environment variables directly (it does not auto-load .env).
+set -a && source .env && set +a
 ```
 
 Environment variables (see `.env.example`):
 
 | Var | Default | Purpose |
 |---|---|---|
-| `FALKORDB_HOST` / `FALKORDB_PORT` | `localhost` / `6379` | graph server |
+| `FALKORDB_HOST` / `FALKORDB_PORT` | `localhost` / `6380` | graph server (host port; container listens on 6379) |
 | `AUDITGRAPH_GRAPH` | `auditgraph` | graph name |
 | `ANTHROPIC_API_KEY` | (none) | only for the LLM Verifier |
 | `LLM_MODEL` | (none) | Anthropic model id for the Verifier; never hardcoded |
@@ -95,6 +97,44 @@ python -m pytest -q                        # 10 tests, needs FalkorDB running
 Other commands: `findings` (list graph state), `diff` (show the impact set), `audit --full` (ignore the impact set).
 
 Clear errors are shown when FalkorDB is unreachable, `solc` is missing, Slither fails to compile, or the API key or model is missing.
+
+### Use the container you already started
+
+If you ran `docker run --name falkordb -p 6380:6379 ...`, keep that container and
+do not start a second FalkorDB container. Point this project at it and confirm the
+connection:
+
+```bash
+export FALKORDB_HOST=localhost FALKORDB_PORT=6380 AUDITGRAPH_GRAPH=auditgraph
+python -m src.schema
+```
+
+The command should print `Connected.` and index information. Then run the `ingest`,
+`audit --no-llm`, and `report` commands above. To query the same graph directly:
+
+```bash
+docker exec -it falkordb redis-cli GRAPH.QUERY auditgraph "MATCH (n) RETURN labels(n), count(n)"
+```
+
+### Open the graph in FalkorDB Browser
+
+Open `http://localhost:3000`. On the login screen, connect to the local database
+with these values:
+
+| Field | Value |
+|---|---|
+| Host | `172.19.0.1` |
+| Port | `6380` |
+| Username | `default` |
+| Password | leave blank |
+
+After login, select **`auditgraph`** in the graph dropdown to display the project
+graph. The host address is the Docker gateway for the Browser container, which
+lets it reach the FalkorDB instance exposed on host port `6380`.
+
+For your demo, show the CLI ingesting a sample contract, producing a finding from
+the Cypher scanner, and querying the resulting nodes in FalkorDB. The Browser UI
+is optional; FalkorDB itself is the application's graph store and query engine.
 
 ---
 

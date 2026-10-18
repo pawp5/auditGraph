@@ -3,7 +3,7 @@ services:
   falkordb:
     image: falkordb/falkordb:latest
     ports:
-      - "6379:6379"
+      - "6380:6379"
       - "3000:3000"
     volumes:
       - falkordb_data:/data   # persists agent memory (findings, verdicts, triage) across restarts
